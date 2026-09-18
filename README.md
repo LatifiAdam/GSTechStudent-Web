@@ -71,3 +71,25 @@ npm run build
 ## CI
 
 GitHub Actions includes a build check on pushes and pull requests to `main`. It installs the declared npm dependencies and runs `npm run build`.
+
+## Version 1.2.0 — role workflows and UI fixes
+
+- Removed the demo profile/login concept; authentication requires real backend accounts.
+- Super Admin EFP access is wired in the Web UI; apply the included backend patch to allow `GET/POST /etablissements` for `superadmin`.
+- SRIO/SCQ regional account creation now sends the creator's region and the backend patch enforces it.
+- SRIO/SCQ role lists use the scoped `/users` response and filter by the required role, fixing newly-created regional account visibility.
+- Added password confirmation to user creation.
+- Added a dedicated SCQ Directeur → EFP assignment page.
+- Added Gestionnaire document upload (PDF) with backend routing to the Director of the same EFP for validation.
+- Added Director document validation/refusal actions.
+- Added working announcement creation modal for Director/DF/Formateur using the backend DTO.
+- Formateur dashboard statistics now show Stagiaires and Classes, and quick access points to Groupes and Stagiaires.
+- Added logout confirmation.
+- Improved dark-mode contrast for text on blue backgrounds.
+
+## Backend patch
+
+See `backend-patch/README.md` and the three patch files included in this archive. Apply them to the backend repository on the Ubuntu server before testing the Super Admin EFP workflow and regional account creation.
+
+## v1.2.2 backend dependency
+For Super Admin EFP creation and regional SRIO/SCQ account workflows, deploy the matching backend changes from the GSTechStudent mobile/backend package. The browser never accesses MySQL directly.
