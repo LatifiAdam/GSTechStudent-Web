@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import './styles.css';
 
-const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://192.168.1.34:3000/api/v1').replace(/\/$/, '');
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://192.168.1.101:3000/api/v1').replace(/\/$/, '');
 const TOKEN_KEY = 'gstech_access_token';
 const REFRESH_KEY = 'gstech_refresh_token';
 
