@@ -44,6 +44,7 @@ import {
 } from "lucide-react";
 import "./styles.css";
 import "./web2-theme.css";
+import logo from "./logo.png";
 
 const API_BASE = (
   import.meta.env.VITE_API_BASE_URL || "http://192.168.1.101:3000/api/v1"
@@ -363,7 +364,7 @@ function App() {
     <div className="app">
       <aside className={`sidebar ${mobile ? "mobile-open" : ""}`}>
         <div className="brand">
-          <img className="brand-logo" src="/logo.png" alt="GSTechStudent" />
+          <img className="brand-logo" src={logo} alt="GSTechStudent" />
           <div>
             <strong>GSTechStudent</strong>
             <span>Plateforme Web</span>
@@ -576,7 +577,7 @@ function Login({ onLogin, onVerify, apiBase }) {
     <main className="login-page">
       <section className="login-story">
         <div className="login-brand">
-          <img className="brand-logo big" src="/logo.png" alt="GSTechStudent" />
+          <img className="brand-logo" src={logo} alt="GSTechStudent" />
           <div>
             <strong>GSTechStudent</strong>
             <span>Portail de formation</span>
@@ -596,7 +597,7 @@ function Login({ onLogin, onVerify, apiBase }) {
       <section className="login-form-wrap">
         <div className="login-card">
           <div className="login-brand">
-            <img className="brand-logo big" src="/logo.png" alt="GSTechStudent" />
+            <img className="brand-logo" src={logo} alt="GSTechStudent" />
             <div>
               <strong>GSTechStudent</strong>
               <span>Plateforme de gestion OFPPT</span>
