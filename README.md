@@ -19,7 +19,7 @@ npm run dev
 Set `VITE_API_BASE_URL` to the address reachable from the computer running the browser, for example:
 
 ```env
-VITE_API_BASE_URL=http://192.168.1.19:3000/api/v1
+VITE_API_BASE_URL= http://gstech-web.dns.army.com
 ```
 
 ## Backend CORS
@@ -71,3 +71,21 @@ npm run build
 ## CI
 
 GitHub Actions includes a build check on pushes and pull requests to `main`. It installs the declared npm dependencies and runs `npm run build`.
+
+## Web(2) design merge
+
+The current API-connected website keeps its original React/Vite architecture, NestJS API integration, JWT/2FA authentication and role-based navigation. The visual system from `GSTechStudent-Web(2).zip` has been merged into the live frontend as a presentation layer, including the split login experience, updated teal/navy/gold styling, dashboard card layout, activity/quick-access panels, schedule presentation and responsive spacing.
+
+The mock/demo authentication and static demo datasets from the Lovable/TanStack source were intentionally not imported. The website continues to use the real `/api/v1` backend.
+
+## GitHub Pages deployment
+
+The existing deployment flow is preserved:
+
+```bash
+npm install
+npm run build
+npm run deploy
+```
+
+`npm run deploy` remains `gh-pages -d dist`, and `vite.config.js` keeps the `/GSTechStudent-Web/` base path required by GitHub Pages.

@@ -43,9 +43,11 @@ import {
   Zap,
 } from "lucide-react";
 import "./styles.css";
+import "./web2-theme.css";
+import logo from "./logo.png";
 
 const API_BASE = (
-  import.meta.env.VITE_API_BASE_URL || "http://192.168.1.101:3000/api/v1"
+  import.meta.env.VITE_API_BASE_URL || "http://gstech-web.dns.army.com"
 ).replace(/\/$/, "");
 const TOKEN_KEY = "gstech_access_token";
 const REFRESH_KEY = "gstech_refresh_token";
@@ -362,7 +364,7 @@ function App() {
     <div className="app">
       <aside className={`sidebar ${mobile ? "mobile-open" : ""}`}>
         <div className="brand">
-          <img className="brand-logo" src="/logo.png" alt="GSTechStudent" />
+          <img className="brand-logo" src={logo} alt="GSTechStudent" />
           <div>
             <strong>GSTechStudent</strong>
             <span>Plateforme Web</span>
@@ -445,12 +447,18 @@ function App() {
                 placeholder="Rechercher..."
               />
             </div>
-            <button className="icon-btn notif">
+            <button className="icon-btn notif" aria-label="Notifications">
               <Bell size={18} />
               <i />
             </button>
-            <div className="avatar">
-              {(session.email || "?").slice(0, 1).toUpperCase()}
+            <div className="header-profile">
+              <div className="avatar">
+                {(session.email || "?").slice(0, 1).toUpperCase()}
+              </div>
+              <div className="header-profile-copy">
+                <strong>{session.email || "Compte GSTech"}</strong>
+                <span>{roleLabel(session.role)}</span>
+              </div>
             </div>
           </div>
         </header>
@@ -539,6 +547,7 @@ function Login({ onLogin, onVerify, apiBase }) {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const submit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -565,126 +574,80 @@ function Login({ onLogin, onVerify, apiBase }) {
     }
   };
   return (
-    <div className="login-page">
-      <div className="login-orb orb-a" />
-      <div className="login-orb orb-b" />
-      <div className="login-card">
+    <main className="login-page">
+      <section className="login-story">
         <div className="login-brand">
-          <img className="brand-logo big" src="/logo.png" alt="GSTechStudent" />
+          <img className="brand-logo" src={logo} alt="GSTechStudent" />
           <div>
             <strong>GSTechStudent</strong>
-            <span>Plateforme de gestion OFPPT</span>
+            <span>Portail de formation</span>
           </div>
         </div>
-        {!challenge ? (
-          <form onSubmit={submit} noValidate>
-            <div className="login-copy">
-              <div className="eyebrow">CONNEXION SÉCURISÉE</div>
-              <h1>Bienvenue</h1>
-              <p>
-                Connectez-vous avec le compte réellement enregistré dans
-                GSTechStudent.
-              </p>
+        <div className="story-content">
+          <div className="eyebrow">VOTRE PARCOURS, SIMPLIFIÉ</div>
+          <h1>Apprendre.<br />Progresser.<br /><em>Réussir.</em></h1>
+          <p>Un espace unique pour suivre la formation, les groupes, les documents, les emplois du temps et le suivi pédagogique.</p>
+        </div>
+        <div className="story-quote">
+          <span>“</span>
+          <p>GSTechStudent centralise les outils de formation tout en conservant les droits et données gérés par l’API.</p>
+        </div>
+        <div className="login-pattern" />
+      </section>
+      <section className="login-form-wrap">
+        <div className="login-card">
+          <div className="login-brand">
+            <img className="brand-logo" src={logo} alt="GSTechStudent" />
+            <div>
+              <strong>GSTechStudent</strong>
+              <span>Plateforme de gestion OFPPT</span>
             </div>
-            <label>
-              Adresse e-mail
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                autoComplete="username"
-                inputMode="email"
-                maxLength={255}
-                required
-                placeholder="nom@exemple.ma"
-              />
-            </label>
-            <label>
-              Mot de passe
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete="current-password"
-                minLength={8}
-                maxLength={128}
-                required
-                placeholder="••••••••"
-              />
-            </label>
-            {error && (
-              <div className="form-error">
-                <AlertCircle size={16} />
-                {error}
+          </div>
+          {!challenge ? (
+            <form className="login-form" onSubmit={submit} noValidate>
+              <div className="login-copy">
+                <div className="eyebrow">CONNEXION SÉCURISÉE</div>
+                <h1>Bienvenue</h1>
+                <p>Connectez-vous avec le compte réellement enregistré dans GSTechStudent.</p>
               </div>
-            )}
-            <button className="primary wide" disabled={loading}>
-              {loading ? (
-                <>
-                  <RefreshCw className="spin" size={17} />
-                  Connexion...
-                </>
-              ) : (
-                <>
-                  Se connecter <ArrowRight size={17} />
-                </>
-              )}
-            </button>
-            <div className="secure-note">
-              <ShieldCheck size={16} />
-              <span>
-                JWT · validation serveur · limitation des tentatives · aucun
-                accès direct à MySQL.
-              </span>
-            </div>
-          </form>
-        ) : (
-          <form onSubmit={verify} noValidate>
-            <div className="login-copy">
-              <div className="eyebrow">DOUBLE AUTHENTIFICATION</div>
-              <h1>Code de sécurité</h1>
-              <p>
-                Un code de vérification a été envoyé à votre adresse e-mail.
-              </p>
-            </div>
-            <label>
-              Code à 6 chiffres
-              <input
-                inputMode="numeric"
-                pattern="\\d{6}"
-                value={code}
-                onChange={(e) =>
-                  setCode(e.target.value.replace(/\D/g, "").slice(0, 6))
-                }
-                minLength={6}
-                maxLength={6}
-                required
-                placeholder="000000"
-                autoFocus
-              />
-            </label>
-            {error && (
-              <div className="form-error">
-                <AlertCircle size={16} />
-                {error}
+              <label>
+                Adresse e-mail
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" inputMode="email" maxLength={255} required placeholder="nom@exemple.ma" />
+              </label>
+              <label>
+                Mot de passe
+                <div className="password-input">
+                  <input type={passwordVisible ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" minLength={8} maxLength={128} required placeholder="••••••••" />
+                  <button type="button" className="secondary" onClick={() => setPasswordVisible((v) => !v)}>{passwordVisible ? "Masquer" : "Afficher"}</button>
+                </div>
+              </label>
+              {error && <div className="form-error"><AlertCircle size={16} />{error}</div>}
+              <button className="primary wide login-submit" disabled={loading}>
+                {loading ? <><RefreshCw className="spin" size={17} /> Connexion...</> : <>Se connecter <ArrowRight size={17} /></>}
+              </button>
+              <div className="secure-note"><ShieldCheck size={16} /><span>JWT · validation serveur · limitation des tentatives · aucun accès direct à MySQL.</span></div>
+            </form>
+          ) : (
+            <form className="login-form" onSubmit={verify} noValidate>
+              <div className="login-copy">
+                <div className="eyebrow">DOUBLE AUTHENTIFICATION</div>
+                <h1>Code de sécurité</h1>
+                <p>Un code de vérification a été envoyé à votre adresse e-mail.</p>
               </div>
-            )}
-            <button className="primary wide" disabled={loading}>
-              {loading ? (
-                <>
-                  <RefreshCw className="spin" size={17} />
-                  Vérification...
-                </>
-              ) : (
-                <>
-                  Valider <CheckCircle2 size={17} />
-                </>
-              )}
-            </button>
-          </form>
-        )}
-      </div>
-    </div>
+              <label>
+                Code à 6 chiffres
+                <input inputMode="numeric" pattern="\\d{6}" value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))} minLength={6} maxLength={6} required placeholder="000000" autoFocus />
+              </label>
+              {error && <div className="form-error"><AlertCircle size={16} />{error}</div>}
+              <button className="primary wide login-submit" disabled={loading}>
+                {loading ? <><RefreshCw className="spin" size={17} /> Vérification...</> : <>Valider <CheckCircle2 size={17} /></>}
+              </button>
+              <div className="secure-note"><ShieldCheck size={16} /><span>Challenge 2FA vérifié par le serveur GSTechStudent.</span></div>
+            </form>
+          )}
+        </div>
+      </section>
+    </main>
   );
 }
 
@@ -746,30 +709,18 @@ function Page({ role, section, search, session, notify, onNavigate }) {
 }
 
 function Dashboard({ role, session, onNavigate }) {
-  const canUsers = [
-    "superadmin",
-    "df",
-    "srio",
-    "scq",
-    "directeur",
-    "gestionnaire",
-  ].includes(role);
-  const canEtabs = ["superadmin", "df", "srio", "scq"].includes(role);
-  const canClasses = ["df", "directeur", "gestionnaire", "formateur"].includes(
-    role,
-  );
-  const canCourses = ["df", "directeur", "formateur", "stagiaire"].includes(
-    role,
-  );
+  const canUsers = ["superadmin","df","srio","scq","directeur","gestionnaire"].includes(role);
+  const canEtabs = ["superadmin","df","srio","scq"].includes(role);
+  const canClasses = ["df","directeur","gestionnaire","formateur"].includes(role);
+  const canCourses = ["df","directeur","formateur","stagiaire"].includes(role);
+  const canToday = ["directeur","formateur","stagiaire"].includes(role);
   const users = useApi(canUsers ? "/users" : null);
   const etabs = useApi(canEtabs ? "/etablissements" : null);
   const classes = useApi(canClasses ? "/classes" : null);
   const courses = useApi(canCourses ? "/courses" : null);
+  const schedule = useApi(canToday ? "/schedule" : null);
   const studentCountFromClasses = Array.isArray(classes.data)
-    ? classes.data.reduce(
-        (n, c) => n + Number(c.effectif ?? c.nombreStagiaires ?? 0),
-        0,
-      )
+    ? classes.data.reduce((n, c) => n + Number(c.effectif ?? c.nombreStagiaires ?? 0), 0)
     : null;
   const counts = {
     users: Array.isArray(users.data) ? users.data.length : null,
@@ -778,112 +729,63 @@ function Dashboard({ role, session, onNavigate }) {
     classes: Array.isArray(classes.data) ? classes.data.length : null,
     courses: Array.isArray(courses.data) ? courses.data.length : null,
   };
-  const cards =
-    role === "stagiaire"
-      ? [
-          ["Cours", counts.courses ?? "—", "Cours accessibles", BookOpen],
-          ["Présence", "—", "Suivi personnel", Activity],
-          ["Notes", "—", "Évaluations", BarChart3],
-          ["Documents", "—", "Espace personnel", FileText],
-        ]
-      : role === "superadmin"
-        ? [
-            ["Utilisateurs", counts.users ?? "—", "Comptes visibles", Users],
-            ["API", "OK", "NestJS /api/v1", Server],
-            ["Sécurité", "JWT", "Session protégée", ShieldCheck],
-            ["Base", "MySQL", "Côté serveur", Database],
-          ]
-        : role === "formateur"
-          ? [
-              [
-                "Stagiaires",
-                counts.students ?? "—",
-                "Stagiaires accessibles",
-                GraduationCap,
-              ],
-              [
-                "Classes",
-                counts.classes ?? "—",
-                "Classes accessibles",
-                Layers3,
-              ],
-              ["Présences", "—", "Suivi pédagogique", ClipboardCheck],
-              ["Notes", "—", "Évaluations", BarChart3],
-            ]
-          : [
-              [
-                "Utilisateurs",
-                canUsers ? (counts.users ?? "—") : "—",
-                "Dans le périmètre",
-                Users,
-              ],
-              [
-                "Établissements",
-                canEtabs ? (counts.etabs ?? "—") : "—",
-                "Dans le périmètre",
-                Building2,
-              ],
-              [
-                "Groupes",
-                canClasses ? (counts.classes ?? "—") : "—",
-                "Classes visibles",
-                Layers3,
-              ],
-              [
-                "Modules",
-                canCourses ? (counts.courses ?? "—") : "—",
-                "Modules visibles",
-                BookOpen,
-              ],
-            ];
+  const cards = role === "stagiaire"
+    ? [["Cours", counts.courses ?? "—", "Cours accessibles", BookOpen], ["Présence", "—", "Suivi personnel", Activity], ["Notes", "—", "Évaluations", BarChart3], ["Documents", "—", "Espace personnel", FileText]]
+    : role === "superadmin"
+      ? [["Utilisateurs", counts.users ?? "—", "Comptes visibles", Users], ["API", "OK", "NestJS /api/v1", Server], ["Sécurité", "JWT", "Session protégée", ShieldCheck], ["Base", "MySQL", "Côté serveur", Database]]
+      : role === "formateur"
+        ? [["Stagiaires", counts.students ?? "—", "Stagiaires accessibles", GraduationCap], ["Classes", counts.classes ?? "—", "Classes accessibles", Layers3], ["Présences", "—", "Suivi pédagogique", ClipboardCheck], ["Notes", "—", "Évaluations", BarChart3]]
+        : [["Utilisateurs", canUsers ? (counts.users ?? "—") : "—", "Dans le périmètre", Users], ["Établissements", canEtabs ? (counts.etabs ?? "—") : "—", "Dans le périmètre", Building2], ["Groupes", canClasses ? (counts.classes ?? "—") : "—", "Classes visibles", Layers3], ["Modules", canCourses ? (counts.courses ?? "—") : "—", "Modules visibles", BookOpen]];
+  const filteredToday = Array.isArray(schedule.data) ? schedule.data.slice(0, 4) : [];
+  const actions = role === "formateur"
+    ? [["groups", "Groupes", Layers3], ["students", "Stagiaires", GraduationCap], ["announcements", "Annonces", MessageSquare]]
+    : role === "stagiaire"
+      ? [["schedule", "Voir mon planning", CalendarDays], ["grades", "Consulter mes notes", BarChart3], ["documents", "Mes documents", FileText]]
+      : [["users", "Utilisateurs", Users], ["establishments", "Établissements", Building2], ["profile", "Mon profil", CircleUserRound]];
   return (
-    <>
-      <div className="hero">
-        <div>
-          <div className="eyebrow">{ROLES[role]?.home}</div>
-          <h1>Bonjour, bienvenue sur GSTechStudent</h1>
-          <p>
-            Les informations affichées ici proviennent de l'API partagée avec
-            l'application mobile.
-          </p>
-          <div className="hero-meta">
-            <span>
-              <Wifi size={14} /> Session JWT active
-            </span>
-            <span>
-              <Zap size={14} /> Données en direct
-            </span>
-            <span>{session.email}</span>
-          </div>
-        </div>
-        <div className="hero-actions">
-          <button className="secondary" onClick={() => onNavigate("profile")}>
-            <UserRound size={16} />
-            Mon profil
-          </button>
-        </div>
-      </div>
-      <div className="stats">
+    <div className="dashboard-stack">
+      <section className="stats">
         {cards.map(([label, val, sub, Icon]) => (
-          <div className="stat-card" key={label}>
-            <div className="stat-icon">
-              <Icon size={18} />
-            </div>
-            <div>
-              <span>{label}</span>
-              <strong>{val}</strong>
-              <small>{sub}</small>
-            </div>
-          </div>
+          <article className="stat-card" key={label}>
+            <div className="stat-top"><span className="stat-icon"><Icon size={17} /></span><span className="stat-trend">{sub}</span></div>
+            <strong>{val}</strong><p>{label}</p>
+          </article>
         ))}
-      </div>
-      <div className="grid-2">
-        <ActivityPanel role={role} />
-        <QuickPanel role={role} onNavigate={onNavigate} />
-      </div>
-    </>
+      </section>
+      <section className="grid-2">
+        <div className="panel">
+          <div className="panel-head"><div><h2>Activité récente</h2><p>État de la plateforme et données synchronisées</p></div><span className="badge success"><span className="dot live" /> Connecté</span></div>
+          <div className="flow">
+            <div><Server /><b>Web</b><small>React / Vite</small></div><span>→</span>
+            <div><Zap /><b>API</b><small>NestJS / JWT</small></div><span>→</span>
+            <div><Database /><b>MySQL</b><small>gestion_stagiaires</small></div>
+          </div>
+          <div className="architecture-note"><ShieldCheck size={16} /><span>MySQL et MinIO restent côté serveur ; le navigateur ne reçoit aucun secret de stockage.</span></div>
+        </div>
+        <div className="panel">
+          <div className="panel-head"><div><h2>Accès rapides</h2><p>Actions adaptées à votre rôle</p></div></div>
+          <div className="quick-grid">
+            {actions.map(([s, t, I]) => <button key={s} onClick={() => onNavigate(s)}><span><I size={16} /></span><div><b>{t}</b><small>Ouvrir l'espace</small></div><ArrowRight size={15} /></button>)}
+          </div>
+        </div>
+      </section>
+      {canToday && (
+        <section className="panel">
+          <div className="panel-head"><div><h2>Aujourd’hui</h2><p>Vos prochains rendez-vous</p></div><button className="secondary" onClick={() => onNavigate("schedule")}>Voir le calendrier</button></div>
+          {schedule.loading ? <LoadingState /> : filteredToday.length ? <div className="today-timeline">
+            {filteredToday.map((x, i) => <div className="timeline-item" key={x.id || x.idCreneau || `${timeOf(x)}-${i}`}>
+              <div className="timeline-time"><strong>{timeOf(x)}</strong><span>{x.date || x.jour || ""}</span></div>
+              <span className={`timeline-line ${i % 2 ? "gold" : ""}`} />
+              <div><strong>{x.cours?.nomCours || x.cours?.nom || x.nomCours || "Cours"}</strong><span>{x.classe?.nomClasse || x.groupe?.nomGroupe || x.nomClasse || x.salle || "Groupe non renseigné"}</span></div>
+              <span className="badge success">Aujourd’hui</span>
+            </div>)}
+          </div> : <EmptyState text="Aucun cours prévu aujourd’hui." />}
+        </section>
+      )}
+    </div>
   );
 }
+
 function ActivityPanel() {
   return (
     <div className="panel">
@@ -2169,7 +2071,7 @@ function Field({
 }
 function PageTitle({ title, subtitle, action, onAction }) {
   return (
-    <div className="page-title">
+    <div className="page-title page-heading">
       <div>
         <div className="eyebrow">GSTechStudent</div>
         <h1>{title}</h1>
@@ -2191,7 +2093,7 @@ function DataPanel({ loading, error, reload, children }) {
 }
 function Table({ headers, rows, actions = true, data = [], notify, reload }) {
   return (
-    <div className="table-wrap">
+    <div className="table-wrap web2-table-wrap">
       <table>
         <thead>
           <tr>
@@ -2331,7 +2233,10 @@ function dayName(x) {
   return map[String(d).toLowerCase()] || String(d).slice(0, 3);
 }
 function timeOf(x) {
-  return x.heureDebut || x.startTime || x.heure || "—";
+  const raw = x?.heureDebut || x?.startTime || x?.heure || x?.time || "—";
+  if (raw === "—") return raw;
+  const match = String(raw).match(/^(\d{1,2}):(\d{2})/);
+  return match ? `${String(match[1]).padStart(2, "0")}:${match[2]}` : String(raw);
 }
 function canCreate(role) {
   return [
