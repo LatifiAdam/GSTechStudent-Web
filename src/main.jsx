@@ -47,7 +47,7 @@ import "./web2-theme.css";
 import logo from "./logo.png";
 
 const API_BASE = (
-  import.meta.env.VITE_API_BASE_URL || "http://gstech-web.dns.army.com"
+  import.meta.env.VITE_API_BASE_URL || "http://gstech-web.dns.army:3000/api/v1"
 ).replace(/\/$/, "");
 const TOKEN_KEY = "gstech_access_token";
 const REFRESH_KEY = "gstech_refresh_token";
