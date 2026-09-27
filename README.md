@@ -19,7 +19,7 @@ npm run dev
 Set `VITE_API_BASE_URL` to the address reachable from the computer running the browser, for example:
 
 ```env
-VITE_API_BASE_URL= http://gstech-web.dns.army:3000/api/v1
+VITE_API_BASE_URL= http://192.168.1.101:3000/api/v1
 ```
 
 ## Backend CORS
